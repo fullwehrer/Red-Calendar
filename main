@@ -1,0 +1,44 @@
+#GUI Tutorial used: https://www.blog.pythonlibrary.org/2021/09/29/create-gui/
+
+
+#def showdata():
+#def createentry(date, blood, pain):
+
+import wx
+
+
+class MyPanel(wx.Panel):
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        conf_button = wx.Button(self, label='Confirm')
+        conf_button.Bind(wx.EVT_BUTTON, self.on_conf)
+
+
+        
+        bloodbox=wx.RadioBox(self, label="bleeding strength",
+          choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
+         name='blood_radio_box')
+        
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        main_sizer.Add(bloodbox, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        main_sizer.Add(conf_button, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        self.SetSizer(main_sizer)
+
+    def on_conf(self, event):
+        print('You clicked the "confirm" button')
+class MyFrame(wx.Frame):
+    
+    def __init__(self):
+        super().__init__(None, title='Red Calendar')
+        panel = MyPanel(self)
+        self.Show()
+if __name__ == '__main__':
+    app = wx.App(redirect=False)
+    frame = MyFrame()
+    app.MainLoop()
