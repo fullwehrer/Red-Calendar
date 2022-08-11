@@ -1,13 +1,36 @@
 #GUI Tutorial used: https://www.blog.pythonlibrary.org/2021/09/29/create-gui/
 
 
-#def showdata():
-#def createentry(date, blood, pain):
 
 import wx
+import wx.adv
+from datetime import datetime
+import csv
+
+
+#def showdata():
+def createentry(blood, pain, painkiller):
+        now = datetime.now()
+        year = int(now.strftime("%Y"))
+        month = int(now.strftime("%m"))
+        day = int(now.strftime("%d"))
+        savefile='redcalendar.csv'
+        with open(savefile, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([year, month, day, blood, pain, painkiller])
+        f.close()
+
+    #hinweisen, dass alle vorigen Tage als blut und schmerzfrei eingetragen werden seit dem letzten eintrag
+
+
+
 
 
 class MyPanel(wx.Panel):
+    blood = 0
+    pain = 0
+    painkiller = False
+    
     
     def __init__(self, parent):
         super().__init__(parent)
@@ -16,13 +39,34 @@ class MyPanel(wx.Panel):
 
 
         
-        bloodbox=wx.RadioBox(self, label="bleeding strength",
+        dateselector=wx.adv.CalendarCtrl(self,style=wx.adv.CAL_SEQUENTIAL_MONTH_SELECTION, name="datectrl")
+
+        bloodbox=wx.RadioBox(self, label="bleeding amount",
           choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
          name='blood_radio_box')
+        bloodbox.Bind(wx.EVT_RADIOBOX, self.on_bloodbox)
+        painbox=wx.RadioBox(self, label="pain amount",
+          choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
+         name='pain_radio_box')
+        painbox.Bind(wx.EVT_RADIOBOX, self.on_painbox)
+
+        painkillercheck=wx.CheckBox(self, label="took painkiller?",
+         name='painkiller_check_box')
+        painkillercheck.Bind(wx.EVT_CHECKBOX, self.on_painkillercheck)
+
         
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         
+        main_sizer.Add(dateselector, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
         main_sizer.Add(bloodbox, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        main_sizer.Add(painbox, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        main_sizer.Add(painkillercheck, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
                        border=5)
         main_sizer.Add(conf_button, proportion=1,
@@ -31,12 +75,25 @@ class MyPanel(wx.Panel):
         self.SetSizer(main_sizer)
 
     def on_conf(self, event):
-        print('You clicked the "confirm" button')
+        createentry(self.blood, self.pain, self.painkiller)
+        print('done')
+        exit()
+
+    def on_bloodbox(self, event):
+        self.blood = event.GetSelection()
+    
+    def on_painbox(self, event):
+        self.pain=event.GetSelection()
+
+    def on_painkillercheck(self, event):
+        self.painkiller=event.IsChecked()
+        
 class MyFrame(wx.Frame):
     
     def __init__(self):
-        super().__init__(None, title='Red Calendar')
+        super().__init__(None, title='Red Calendar', size=(400, 400))
         panel = MyPanel(self)
+        
         self.Show()
 if __name__ == '__main__':
     app = wx.App(redirect=False)
