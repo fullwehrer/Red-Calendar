@@ -6,30 +6,66 @@ import wx
 import wx.adv
 from datetime import datetime
 import csv
+import numpy as np
+
+global savefile 
+savefile ='redcalendar.csv'
 
 
 #def showdata():
-def createentry(blood, pain, painkiller):
-        now = datetime.now()
-        year = int(now.strftime("%Y"))
-        month = int(now.strftime("%m"))
-        day = int(now.strftime("%d"))
-        savefile='redcalendar.csv'
+def createentry(year, month, day, first, blood, pain, painkiller):
+        
+        
         with open(savefile, 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([year, month, day, blood, pain, painkiller])
+            writer.writerow([year, month, day,first, blood, pain, painkiller])
         f.close()
 
-    #hinweisen, dass alle vorigen Tage als blut und schmerzfrei eingetragen werden seit dem letzten eintrag
+def getpastentries():
+    pastentries = []
+    f = open(savefile)
+    limit=100
+    counter=0
+    rowcount = sum(1 for line in f)
+    if rowcount > limit:
+        skip = rowcount - limit
+    else:
+        skip = 0
+    with open(savefile, 'r', newline='') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if counter >= skip:
+                    strlist=row[0:3]
+                    intlist=[eval(i) for i in strlist]
+                    pastentries.append(intlist)
+                counter = counter + 1
+    f.close()
+    return(pastentries)
+
+def getmonthentries(month):
+    pastentries=getpastentries()
+    pastentries = [row for row in pastentries if row[1]==month]
+    return([row[2] for row in pastentries])
+
 
 
 
 
 
 class MyPanel(wx.Panel):
+    now = datetime.now()
+
+    year = int(now.strftime("%Y"))
+    month = int(now.strftime("%m"))
+    day = int(now.strftime("%d"))
+    firstday=False
     blood = 0
     pain = 0
     painkiller = False
+
+
+
+
     
     
     def __init__(self, parent):
@@ -39,7 +75,20 @@ class MyPanel(wx.Panel):
 
 
         
-        dateselector=wx.adv.CalendarCtrl(self,style=wx.adv.CAL_SEQUENTIAL_MONTH_SELECTION, name="datectrl")
+        dateselector=wx.adv.GenericCalendarCtrl(self, name="datectrl")
+        markstyle=wx.adv.CalendarDateAttr(colBack='green')
+        # for daytomark in getpastentries():
+        #     dateselector.SetAttr(5,markstyle)
+        month = 8
+        monthentrylist=getmonthentries(month)
+        print(monthentrylist)
+        for daytomark in monthentrylist:
+            dateselector.SetAttr(daytomark,markstyle)
+        
+
+        firstcheck=wx.CheckBox(self, label="first day of bleeding/pain? (all days from last entry will be marked pain/bloodfree)",
+         name='firstday_check_box')
+        firstcheck.Bind(wx.EVT_CHECKBOX, self.on_firstdaycheck)
 
         bloodbox=wx.RadioBox(self, label="bleeding amount",
           choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
@@ -60,6 +109,9 @@ class MyPanel(wx.Panel):
         main_sizer.Add(dateselector, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
                        border=5)
+        main_sizer.Add(firstcheck, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
         main_sizer.Add(bloodbox, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
                        border=5)
@@ -74,10 +126,9 @@ class MyPanel(wx.Panel):
                        border=5)
         self.SetSizer(main_sizer)
 
-    def on_conf(self, event):
-        createentry(self.blood, self.pain, self.painkiller)
-        print('done')
-        exit()
+    
+    def on_firstdaycheck(self, event):
+        self.firstday=event.IsChecked()
 
     def on_bloodbox(self, event):
         self.blood = event.GetSelection()
@@ -87,6 +138,10 @@ class MyPanel(wx.Panel):
 
     def on_painkillercheck(self, event):
         self.painkiller=event.IsChecked()
+
+    def on_conf(self, event):
+        createentry(self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
+        exit()    
         
 class MyFrame(wx.Frame):
     
