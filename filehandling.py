@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 def getpastentries(savefile):
     pastentries = []
     f = open(savefile)
@@ -27,3 +28,8 @@ def createentry(savefile, year, month, day, first, blood, pain, painkiller):
             writer = csv.writer(f)
             writer.writerow([year, month, day,first, blood, pain, painkiller])
         f.close()
+
+def orderbydate(savefile):
+    data=pd.read_csv(savefile, header=None)
+    data.sort_values([data.columns[0],data.columns[1],data.columns[2]], axis=0, ascending=[True,True, True], inplace=True)
+    data.to_csv(savefile, index=False, header=False)

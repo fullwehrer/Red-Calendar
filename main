@@ -130,6 +130,7 @@ class MyPanel(wx.Panel):
 
     def on_conf(self, event):
         filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
+        filehandling.orderbydate(savefile)
         exit()    
         
 class MyFrame(wx.Frame):
