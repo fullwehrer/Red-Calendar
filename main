@@ -64,7 +64,7 @@ class MyPanel(wx.Panel):
         firstcheck.Bind(wx.EVT_CHECKBOX, self.on_firstdaycheck)
 
         bloodbox=wx.RadioBox(self, label="bleeding amount",
-            choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
+            choices=['0','1','2','3','4','5'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
             name='blood_radio_box')
         bloodbox.Bind(wx.EVT_RADIOBOX, self.on_bloodbox)
         painbox=wx.RadioBox(self, label="pain amount",
@@ -112,6 +112,8 @@ class MyPanel(wx.Panel):
         self.month=date.month
         self.year=date.year
         # self.__init__.markdays(self) (funktioniert noch nicht)
+        if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
+            
 
         
     
