@@ -11,7 +11,7 @@ import numpy as np
 import filehandling
 
 global savefile 
-savefile ='redcalendar.csv'
+savefile ='redcalendar_testing.csv'
 
 
 #def showdata():
@@ -112,7 +112,7 @@ class MyPanel(wx.Panel):
         self.month=date.month
         self.year=date.year
         # self.__init__.markdays(self) (funktioniert noch nicht)
-        #if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
+        
             
 
         
@@ -131,6 +131,9 @@ class MyPanel(wx.Panel):
         self.painkiller=event.IsChecked()
 
     def on_conf(self, event):
+        #if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
+            #popper=wx.YES_NO(self, self.parent, 'really?')
+
         filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
         filehandling.orderbydate(savefile)
         exit()    
@@ -142,6 +145,9 @@ class MyFrame(wx.Frame):
         panel = MyPanel(self)
         
         self.Show()
+
+
+
 if __name__ == '__main__':
     app = wx.App(redirect=False)
     frame = MyFrame()
