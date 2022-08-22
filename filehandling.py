@@ -30,6 +30,12 @@ def createentry(savefile, year, month, day, first, blood, pain, painkiller):
         f.close()
 
 def orderbydate(savefile):
-    data=pd.read_csv(savefile, header=None)
-    data.sort_values([data.columns[0],data.columns[1],data.columns[2]], axis=0, ascending=[True,True, True], inplace=True)
-    data.to_csv(savefile, index=False, header=False)
+    filedata=pd.read_csv(savefile, header=None)
+    print(filedata)
+    filedata.sort_values([filedata.columns[0],filedata.columns[1],filedata.columns[2]], axis=0, ascending=[True,True, True], inplace=True)
+    filedata.to_csv(savefile, index=False, header=False)
+
+# def dateoflastentry(savefile, year, month, day):
+#     filedata=pd.read_csv(savefile, header=None)
+
+# def fillzeros(date):
