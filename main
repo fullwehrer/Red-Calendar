@@ -67,7 +67,7 @@ class MyPanel(wx.Panel):
             choices=['0','1','2','3','4','5'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
             name='blood_radio_box')
         bloodbox.Bind(wx.EVT_RADIOBOX, self.on_bloodbox)
-        painbox=wx.RadioBox(self, label="pain amount",
+        painbox=wx.RadioBox(self, label="pain amount (Mankoski Pain Scale - http://www.valis.com/andi/painscale.html)",
             choices=['0','1','2','3','4','5','6','7','8','9','10'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
             name='pain_radio_box')
         painbox.Bind(wx.EVT_RADIOBOX, self.on_painbox)
@@ -112,7 +112,7 @@ class MyPanel(wx.Panel):
         self.month=date.month
         self.year=date.year
         # self.__init__.markdays(self) (funktioniert noch nicht)
-        if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
+        #if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
             
 
         
