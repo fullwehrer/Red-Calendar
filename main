@@ -5,8 +5,7 @@
 import wx
 import wx.adv
 from datetime import datetime
-import csv
-import numpy as np
+
 
 
 import filehandling
@@ -38,8 +37,8 @@ class MyPanel(wx.Panel):
 
     def markdays(self, dateselector, markstyle):
             monthentrylist=getmonthentries(self.month)
-            # for daytomark in monthentrylist:
-            #     dateselector.SetAttr(daytomark,markstyle)
+            for daytomark in monthentrylist:
+                dateselector.SetAttr(daytomark,markstyle)
 
     
     
@@ -133,10 +132,11 @@ class MyPanel(wx.Panel):
         self.painkiller=event.IsChecked()
 
     def on_conf(self, event):
-        #if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
-            #popper=wx.YES_NO(self, self.parent, 'really?')
+        if filehandling.checkentryexists(savefile, self.year, self.month, self.day):
+            print('popper?')
+            popper=wx.MessageDialog(None, 'really?', ABC, wx.YES_NO).ShowModal()
 
-        filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
+        # filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
         filehandling.orderbydate(savefile)
         exit()    
         

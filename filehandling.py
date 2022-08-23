@@ -35,6 +35,7 @@ def orderbydate(savefile):
     filedata.to_csv(savefile, index=False, header=False)
 
 def checkentryexists(savefile, year, month, day):
+    print(year+month+day)
     with open(savefile, 'r', newline='') as f:
         reader = csv.reader(f)
         for row in reader:
