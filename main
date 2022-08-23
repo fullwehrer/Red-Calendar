@@ -53,12 +53,17 @@ class MyPanel(wx.Panel):
         self.blood = 0
         self.pain = 0
         self.painkiller = False
+        self.forgotcheck=False
 
         
         self.dateselector=wx.adv.GenericCalendarCtrl(self, name="datectrl")
         self.dateselector.Bind(wx.adv.EVT_CALENDAR_SEL_CHANGED,self.on_selectionchanged)
         self.markstyle=wx.adv.CalendarDateAttr(colBack='green')
         self.markdays(self.dateselector, self.markstyle)
+
+        forgotcheck=wx.CheckBox(self, label="first entry since longer, forgot to enter last bleeding/pain? (all days from last entry will be marked forgotten)",
+            name='forgot_check_box')
+        forgotcheck.Bind(wx.EVT_CHECKBOX, self.on_forgotcheck)
 
         firstcheck=wx.CheckBox(self, label="first entry since last bleeding/pain? (all days from last entry will be marked pain/bloodfree)",
             name='firstday_check_box')
@@ -84,6 +89,9 @@ class MyPanel(wx.Panel):
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         
         main_sizer.Add(self.dateselector, proportion=1,
+                       flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        main_sizer.Add(forgotcheck, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
                        border=5)
         main_sizer.Add(firstcheck, proportion=1,
@@ -116,7 +124,8 @@ class MyPanel(wx.Panel):
         
             
 
-        
+    def on_forgotcheck(self, event):
+        self.forgotcheck=event.IsChecked()    
     
 
     def on_firstdaycheck(self, event):
@@ -145,7 +154,7 @@ class MyPanel(wx.Panel):
             filehandling.deleteentry(savefile,entryexists[1])
             
         print('creating entry')
-        filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller)
+        filehandling.createentry(savefile, self.year, self.month, self.day, self.firstday,self.blood, self.pain, self.painkiller, self.forgotcheck)
         filehandling.orderbydate(savefile)
         exit()    
 
@@ -154,7 +163,7 @@ class MyPanel(wx.Panel):
 class MyFrame(wx.Frame):
     
     def __init__(self):
-        super().__init__(None, title='Red Calendar', size=(400, 400))
+        super().__init__(None, title='Red Calendar', size=(400, 500))
         panel = MyPanel(self)
         
         self.Show()

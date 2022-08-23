@@ -21,12 +21,12 @@ def getpastentries(savefile):
     f.close()
     return(pastentries)
 
-def createentry(savefile, year, month, day, first, blood, pain, painkiller):
+def createentry(savefile, year, month, day, first, blood, pain, painkiller, forgot):
         
         
         with open(savefile, 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([year, month, day,first, blood, pain, painkiller])
+            writer.writerow([year, month, day,first, blood, pain, painkiller, forgot])
         f.close()
 
 def orderbydate(savefile):
@@ -53,10 +53,8 @@ def checkentryexists(savefile, year, month, day):
 
 def deleteentry(savefile, rownumber):
     filedata=pd.read_csv(savefile, header=None)
-    print(filedata)
     # filedata.drop([rownumber])
     filedata = filedata.drop(rownumber)
-    print(filedata)
     filedata.to_csv(savefile, index=False, header=False)
 
 # def fillzeros(date):
