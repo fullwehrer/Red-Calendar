@@ -8,7 +8,10 @@ from datetime import datetime
 import csv
 import numpy as np
 
+
 import filehandling
+
+
 
 global savefile 
 savefile ='redcalendar_testing.csv'
@@ -35,9 +38,8 @@ class MyPanel(wx.Panel):
 
     def markdays(self, dateselector, markstyle):
             monthentrylist=getmonthentries(self.month)
-            print(monthentrylist)
-            for daytomark in monthentrylist:
-                dateselector.SetAttr(daytomark,markstyle)
+            # for daytomark in monthentrylist:
+            #     dateselector.SetAttr(daytomark,markstyle)
 
     
     

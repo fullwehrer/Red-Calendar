@@ -8,9 +8,9 @@
 import wx
 
 
-class MeinFrame(wx.Frame):
+class MyFrame(wx.Frame):
     """
-    This is MeinFrame.  It just shows a few controls on a wxPanel,
+    This is MyFrame.  It just shows a few controls on a wxPanel,
     and has a simple menu.
     """
     def __init__(self, parent, title):
@@ -78,9 +78,9 @@ class MeinFrame(wx.Frame):
         print ("Having fun yet?")
 
 
-class MeinApp(wx.App):
+class MyApp(wx.App):
     def OnInit(self):
-        frame = MeinFrame(None, "Simple wxPython App")
+        frame = MyFrame(None, "Simple wxPython App")
         self.SetTopWindow(frame)
 
         print ("Print statements go to this stdout window by default.")
@@ -88,6 +88,6 @@ class MeinApp(wx.App):
         frame.Show(True)
         return True
         
-app = MeinApp(redirect=True)
+app = MyApp(redirect=True)
 app.MainLoop()
 
