@@ -13,7 +13,7 @@ import filehandling
 
 
 global savefile 
-savefile ='redcalendar_testing.csv'
+savefile ='filltesting.csv'
 
 
 #def showdata():
@@ -61,11 +61,11 @@ class MyPanel(wx.Panel):
         self.markstyle=wx.adv.CalendarDateAttr(colBack='green')
         self.markdays(self.dateselector, self.markstyle)
 
-        forgotcheck=wx.CheckBox(self, label="first entry since longer, forgot to enter last bleeding/pain? (all days from last entry will be marked forgotten)",
+        forgotcheck=wx.CheckBox(self, label="FORGOTTEN? - first entry since longer, forgot to enter last bleeding/pain? (all days from last entry will be marked forgotten)",
             name='forgot_check_box')
         forgotcheck.Bind(wx.EVT_CHECKBOX, self.on_forgotcheck)
 
-        firstcheck=wx.CheckBox(self, label="first entry since last bleeding/pain? (all days from last entry will be marked pain/bloodfree)",
+        firstcheck=wx.CheckBox(self, label="FIRST entry since last bleeding/pain? (all days from last entry will be marked pain/bloodfree unless FORGOTTEN is also checked)",
             name='firstday_check_box')
         firstcheck.Bind(wx.EVT_CHECKBOX, self.on_firstdaycheck)
 
@@ -141,7 +141,10 @@ class MyPanel(wx.Panel):
         self.painkiller=event.IsChecked()
 
     def on_conf(self, event):
-        
+        if self.forgotcheck == True:
+            filehandling.fillpast(savefile, self.year, self.month, self.day, 'forgotten')
+        elif self.firstday == True:
+            filehandling.fillpast(savefile, self.year, self.month, self.day, 'zeros')
         entryexists=filehandling.checkentryexists(savefile, self.year, self.month, self.day)
         if entryexists[0]:
             popper=wx.MessageDialog(None, 'An entry for this date already exists. Do you want to overwrite it?', 'Warning', wx.YES_NO).ShowModal()
