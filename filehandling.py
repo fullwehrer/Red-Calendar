@@ -35,14 +35,28 @@ def orderbydate(savefile):
     filedata.to_csv(savefile, index=False, header=False)
 
 def checkentryexists(savefile, year, month, day):
-    print(year+month+day)
+    
     with open(savefile, 'r', newline='') as f:
         reader = csv.reader(f)
+        rownumber=-1
+        result = [False,rownumber]
         for row in reader:
-            if row[0]==year and row[1]==month and row[2]== day:
-                return True
-            else:
-                return False
+            rownumber=rownumber + 1
+            rowyear=int(row[0])
+            rowmonth=int(row[1])
+            rowday=int(row[2])
+            if rowyear==year and rowmonth==month and rowday== day:
+                result = [True,rownumber]
+        print(result)
+        return result    
     f.close()
+
+def deleteentry(savefile, rownumber):
+    filedata=pd.read_csv(savefile, header=None)
+    print(filedata)
+    # filedata.drop([rownumber])
+    filedata = filedata.drop(rownumber)
+    print(filedata)
+    filedata.to_csv(savefile, index=False, header=False)
 
 # def fillzeros(date):
