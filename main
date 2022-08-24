@@ -17,10 +17,6 @@ global savefile
 savefile ='visualizationtesting.csv'
 
 
-#def showdata():
-
-
-
 
 def getmonthentries(month):
     pastentries=filehandling.getpastentries(savefile)
@@ -33,13 +29,16 @@ def getmonthentries(month):
 
 
 class MyPanel(wx.Panel):
-    
+    dateselector=None
+    markstyle=None
 
 
     def markdays(self, dateselector, markstyle):
-            monthentrylist=getmonthentries(self.month)
+            monthentrylist=getmonthentries(self.month)         
             for daytomark in monthentrylist:
-                dateselector.SetAttr(daytomark,markstyle)
+                if dateselector.GetAttr(daytomark) == None:
+                    dateselector.SetAttr(daytomark,markstyle)
+                
 
     
     
@@ -58,9 +57,11 @@ class MyPanel(wx.Panel):
 
         
         self.dateselector=wx.adv.GenericCalendarCtrl(self, name="datectrl")
+        self.dateselector.EnableHolidayDisplay(False)
         self.dateselector.Bind(wx.adv.EVT_CALENDAR_SEL_CHANGED,self.on_selectionchanged)
         self.markstyle=wx.adv.CalendarDateAttr(colBack='green')
         self.markdays(self.dateselector, self.markstyle)
+        self.dateselector.Bind(wx.adv.EVT_CALENDAR_PAGE_CHANGED,self.on_pagechanged)
 
         forgotcheck=wx.CheckBox(self, label="FORGOTTEN? - first entry since longer, forgot to enter last bleeding/pain? (all days from last entry will be marked forgotten)",
             name='forgot_check_box')
@@ -127,7 +128,9 @@ class MyPanel(wx.Panel):
         self.day=date.day
         self.month=date.month
         self.year=date.year
-        # self.__init__.markdays(self) (funktioniert noch nicht)
+    
+    def on_pagechanged(self, event):
+        self.markdays(self.dateselector, self.markstyle)
         
             
 
