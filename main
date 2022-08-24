@@ -24,17 +24,25 @@ def getmonthentries(month):
     return([row[2] for row in pastentries])
 
 
+# class Mycalendardateattr(wx.adv.CalendarDateAttr):
 
-
+#     def __init__ (self):
+#         super().__init__(colBack='green')
+#         print(self.GetBackgroundColour())
 
 
 class MyPanel(wx.Panel):
     dateselector=None
     markstyle=None
+    # markstyle = Mycalendardateattr()
 
 
     def markdays(self, dateselector, markstyle):
-            monthentrylist=getmonthentries(self.month)         
+            monthentrylist=getmonthentries(self.month)  
+            for i in range(30):
+                if not dateselector.GetAttr(i+1) == None:
+                    dateselector.ResetAttr(i+1)
+
             for daytomark in monthentrylist:
                 if dateselector.GetAttr(daytomark) == None:
                     dateselector.SetAttr(daytomark,markstyle)
@@ -130,12 +138,15 @@ class MyPanel(wx.Panel):
         self.year=date.year
     
     def on_pagechanged(self, event):
-        self.markdays(self.dateselector, self.markstyle)
+        # self.markdays(self.dateselector, self.markstyle)
+        print()
+        
         
             
 
     def on_forgotcheck(self, event):
-        self.forgotcheck=event.IsChecked()    
+        self.forgotcheck=event.IsChecked() 
+         
     
 
     def on_firstdaycheck(self, event):
@@ -183,9 +194,17 @@ class MyFrame(wx.Frame):
         self.Show()
 
 
-
 if __name__ == '__main__':
     filehandling.checkcreatesavefile(savefile)
     app = wx.App(redirect=False)
     frame = MyFrame()
     app.MainLoop()
+
+def startapp():
+    app = wx.App(redirect=False)
+    frame = MyFrame()
+    app.MainLoop()
+
+def restartapp():
+    self.Destroy()
+    

@@ -68,23 +68,28 @@ def fillpast(savefile, year, month, day, kind):
     else:
         print('error fillpast')
         return
-    pastdates=daterange(date(2022,7,1),date(year,month,day))
+    pastdates=daterange(date(2022,1,1),date(year,month,day))
     pastdates.reverse()
     filedata=pd.read_csv(savefile, header=None)
     fillentries=[]
-    print(filedata)
+    alreadyexists = False
+    # print(pastdates)
     for single_date in pastdates:
         for i in range(len(filedata)):
             rowyear=int(filedata.iloc[i,0])
             rowmonth=int(filedata.iloc[i,1])
             rowday=int(filedata.iloc[i,2])
             if rowyear==single_date[0] and rowmonth==single_date[1] and rowday==single_date[2]:
-                break
-            else:
-                fillentries.append([single_date[0], single_date[1], single_date[2],False, filler, filler, False, False])
+                alreadyexists=True
+            
+        if alreadyexists:
+            break
+        else:
+            fillentries.append([single_date[0], single_date[1], single_date[2],False, filler, filler, False, False])
+
     fillentries=pd.DataFrame(fillentries)
-    filedata=pd.concat([filedata,fillentries],ignore_index=False)
-    print(filedata)
+    filedata=pd.concat([filedata,fillentries],ignore_index=True)
+    # print(filedata)
     filedata.to_csv(savefile, index=False, header=False)
 
 def daterange(start_date, end_date):
@@ -103,7 +108,7 @@ def checkcreatesavefile(savefile):
         if popup == wx.ID_YES:
             f=open(savefile, 'w')
             f.close()
-            createentry(savefile, 2022, 7, 1, False, 0, 0, False, False)
+            createentry(savefile, 2022, 1, 1, False, 0, 0, False, False)
             exit()
         else:
             exit()
