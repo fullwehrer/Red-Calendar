@@ -9,11 +9,12 @@ from datetime import datetime
 
 
 import filehandling
+import visualization
 
 
 
 global savefile 
-savefile ='redcalendar.csv'
+savefile ='visualizationtesting.csv'
 
 
 #def showdata():
@@ -85,6 +86,9 @@ class MyPanel(wx.Panel):
         conf_button = wx.Button(self, label='Confirm')
         conf_button.Bind(wx.EVT_BUTTON, self.on_conf)
 
+        vis_button = wx.Button(self, label='Visualize')
+        vis_button.Bind(wx.EVT_BUTTON, self.on_vis)
+
         
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         
@@ -108,6 +112,9 @@ class MyPanel(wx.Panel):
                        border=5)
         main_sizer.Add(conf_button, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
+                       border=5)
+        main_sizer.Add(vis_button, proportion=1,
+                       flag=wx.ALL | wx.LEFT | wx.SHAPED,
                        border=5)
         self.SetSizer(main_sizer)
 
@@ -161,7 +168,8 @@ class MyPanel(wx.Panel):
         filehandling.orderbydate(savefile)
         exit()    
 
-        
+    def on_vis(self, event):
+        visualization.visualize(savefiles)
         
 class MyFrame(wx.Frame):
     
