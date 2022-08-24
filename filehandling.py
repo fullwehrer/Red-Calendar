@@ -1,6 +1,8 @@
 import csv
 import pandas as pd
 from datetime import timedelta, date
+from os.path import exists
+import wx
 def getpastentries(savefile):
     pastentries = []
     f = open(savefile)
@@ -91,3 +93,17 @@ def daterange(start_date, end_date):
         currentdate=start_date + timedelta(n)
         pastdates.append([currentdate.year, currentdate.month, currentdate.day])
     return pastdates
+
+def checkcreatesavefile(savefile):
+    if not exists(savefile):
+        tmpapp = wx.App(redirect=False)
+        
+        popup=wx.MessageDialog(None, 'No savefile "redcalendar.csv" found in this directory. Create new one? Program will close and needs to be restarted manually.', 'Note', wx.YES_NO).ShowModal()
+        tmpapp.MainLoop()
+        if popup == wx.ID_YES:
+            f=open(savefile, 'w')
+            f.close()
+            createentry(savefile, 2022, 7, 1, False, 0, 0, False, False)
+            exit()
+        else:
+            exit()
