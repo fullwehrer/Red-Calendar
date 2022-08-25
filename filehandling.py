@@ -39,20 +39,23 @@ def orderbydate(savefile):
 
 def checkentryexists(savefile, year, month, day):
     
-    with open(savefile, 'r', newline='') as f:
-        reader = csv.reader(f)
+    
+    reader =pd.read_csv(savefile, header=None)
+    return checkentryexists_dataframesub(reader, year, month, day)
+    
+
+def checkentryexists_dataframesub(dataframe, year, month, day):
         rownumber=-1
         result = [False,rownumber]
-        for row in reader:
+        for i in range(len(dataframe)):
             rownumber=rownumber + 1
-            rowyear=int(row[0])
-            rowmonth=int(row[1])
-            rowday=int(row[2])
+            rowyear=int(dataframe.iloc[i,0])
+            rowmonth=int(dataframe.iloc[i,1])
+            rowday=int(dataframe.iloc[i,2])
             if rowyear==year and rowmonth==month and rowday== day:
                 result = [True,rownumber]
         #print(result)
         return result    
-    f.close()
 
 def deleteentry(savefile, rownumber):
     filedata=pd.read_csv(savefile, header=None)
@@ -85,12 +88,16 @@ def fillpast(savefile, year, month, day, kind):
         if alreadyexists:
             break
         else:
-            fillentries.append([single_date[0], single_date[1], single_date[2],False, filler, filler, False, False])
+            fillentries.append(fillerentry(single_date[0], single_date[1], single_date[2], filler))
 
     fillentries=pd.DataFrame(fillentries)
     filedata=pd.concat([filedata,fillentries],ignore_index=True)
     # print(filedata)
     filedata.to_csv(savefile, index=False, header=False)
+
+def fillerentry(year, month, day, filler):
+    return [year, month, day,False, filler, filler, False, False]
+
 
 def daterange(start_date, end_date):
     pastdates=[]
