@@ -2,11 +2,13 @@
 
 
 
+from time import sleep
 import wx
 import wx.adv
-from datetime import datetime
+from datetime import datetime, date
+import sys
 
-
+# print(wx.version())
 
 import filehandling
 import visualization
@@ -15,13 +17,19 @@ import visualization
 
 global savefile 
 savefile ='visualizationtesting.csv'
+quitMyAppLoop=False
+now=datetime.today()
+globalcalendardate=date(now.year, now.month, now.day)
+
+
 
 
 
 def getmonthentries(month):
     pastentries=filehandling.getpastentries(savefile)
     pastentries = [row for row in pastentries if row[1]==month]
-    return([row[2] for row in pastentries])
+    result= [row[2] for row in pastentries]
+    return(result)
 
 
 # class Mycalendardateattr(wx.adv.CalendarDateAttr):
@@ -31,44 +39,83 @@ def getmonthentries(month):
 #         print(self.GetBackgroundColour())
 
 
+
+
 class MyPanel(wx.Panel):
     dateselector=None
     markstyle=None
+    
     # markstyle = Mycalendardateattr()
 
+    def unmarkdays(self, dateselector):
+        date=self.dateselector.GetDate()
+        a=wx.DateTime.GetLastMonthDay(date)
+        noofdays=wx.DateTime.GetDay(a)
 
-    def markdays(self, dateselector, markstyle):
-            monthentrylist=getmonthentries(self.month)  
-            for i in range(30):
-                if not dateselector.GetAttr(i+1) == None:
+        for i in range(noofdays):
+                if not dateselector.GetAttr(i+1) == None: 
                     dateselector.ResetAttr(i+1)
-
+        self.Show()
+        return
+        
+    def markdays(self, dateselector):
+            self.unmarkdays(self.dateselector)
+            monthentrylist=getmonthentries(self.month)  
+            # print('before deleting')
+            # for i in range(31):
+            #     # print(dateselector.GetAttr(i+1))
+            #     if not dateselector.GetAttr(i+1) == None: 
+            #         dateselector.ResetAttr(i+1) 
+            # print('after deleting')
+            # for i in range(31):
+                # print(dateselector.GetAttr(i+1))
+            # print('before marking')
+            
             for daytomark in monthentrylist:
-                if dateselector.GetAttr(daytomark) == None:
+                # print(dateselector.GetAttr(daytomark))
+                # if dateselector.GetAttr(daytomark) == None:
+                if True:
+                    markstyle=wx.adv.CalendarDateAttr(colBack='green')
                     dateselector.SetAttr(daytomark,markstyle)
+            self.Show()
                 
 
     
     
-    def __init__(self, parent):
+    def __init__(self, parent, calendardate):
         super().__init__(parent)
         
-        now = datetime.now()
-        self.year = int(now.strftime("%Y")) #default
-        self.month = int(now.strftime("%m")) #default
-        self.day = int(now.strftime("%d")) #default
+
+        
+
+        self.year = calendardate.year
+        self.month = calendardate.month
+        self.day = calendardate.day
+        
+
+        # now = datetime.now()
+        # self.year = int(now.strftime("%Y")) #default
+        # self.month = int(now.strftime("%m")) #default
+        # self.day = int(now.strftime("%d")) #default
         self.firstday=False
         self.blood = 0
         self.pain = 0
         self.painkiller = False
         self.forgotcheck=False
 
+
+
+        # prev_button = wx.Button(self, label='previous month')
+        # prev_button.Bind(wx.EVT_BUTTON, self.on_prev)
+
+        # next_button = wx.Button(self, label='next month')
+        # next_button.Bind(wx.EVT_BUTTON, self.on_next)
         
-        self.dateselector=wx.adv.GenericCalendarCtrl(self, name="datectrl")
+        self.dateselector=wx.adv.GenericCalendarCtrl(self, name="datectrl", date=calendardate)
         self.dateselector.EnableHolidayDisplay(False)
+        self.dateselector.EnableMonthChange(True)
         self.dateselector.Bind(wx.adv.EVT_CALENDAR_SEL_CHANGED,self.on_selectionchanged)
-        self.markstyle=wx.adv.CalendarDateAttr(colBack='green')
-        self.markdays(self.dateselector, self.markstyle)
+        self.markdays(self.dateselector)
         self.dateselector.Bind(wx.adv.EVT_CALENDAR_PAGE_CHANGED,self.on_pagechanged)
 
         forgotcheck=wx.CheckBox(self, label="FORGOTTEN? - first entry since longer, forgot to enter last bleeding/pain? (all days from last entry will be marked forgotten)",
@@ -100,7 +147,16 @@ class MyPanel(wx.Panel):
 
         
         main_sizer = wx.BoxSizer(wx.VERTICAL)
-        
+        # controlsizer=wx.BoxSizer(wx.HORIZONTAL)
+        # controlsizer.Add(prev_button, proportion=1,
+        #                flag=wx.ALL | wx.LEFT | wx.EXPAND,
+        #                border=5)
+        # controlsizer.Add(next_button, proportion=1,
+        #                flag=wx.ALL | wx.RIGHT | wx.EXPAND,
+        #                border=5)
+        # main_sizer.Add(controlsizer, proportion=1,
+        #                flag=wx.ALL | wx.CENTER | wx.EXPAND,
+        #                border=5)
         main_sizer.Add(self.dateselector, proportion=1,
                        flag=wx.ALL | wx.CENTER | wx.EXPAND,
                        border=5)
@@ -132,14 +188,21 @@ class MyPanel(wx.Panel):
 
 
     def on_selectionchanged(self, event):
-        date=event.PyGetDate()
-        self.day=date.day
-        self.month=date.month
-        self.year=date.year
+        
+        # date=event.PyGetDate()
+        date=self.dateselector.GetDate()
+        self.year=(wx.DateTime.GetYear(date))
+        self.month=(wx.DateTime.GetMonth(date)+1)#!!!!!!!!!!!!!for some reason getMonth returns 0..11 instead of 1..12
+        
+        self.day=(wx.DateTime.GetDay(date))
+        # self.day=date.day
+        # self.month=date.month
+        # self.year=date.year
     
     def on_pagechanged(self, event):
-        # self.markdays(self.dateselector, self.markstyle)
-        print()
+        self.markdays(self.dateselector)
+        return
+        
         
         
             
@@ -183,28 +246,110 @@ class MyPanel(wx.Panel):
         exit()    
 
     def on_vis(self, event):
-        visualization.visualize(savefiles)
+        visualization.visualize(savefile)
+        exit()
+    # def on_prev(self, event):
+    #     global globalcalendardate
+    #     current=self.dateselector.GetDate()
+    #     globalcalendardate=current.Subtract(wx.DateSpan(months=1))
+    #     # globalcalendardate=current.Add(wx.DateSpan(months=1))
+        
+    #     globalcalendardate=date(wx.DateTime.GetYear(globalcalendardate), wx.DateTime.GetMonth(globalcalendardate)+1, wx.DateTime.GetDay(globalcalendardate))
+        
+    #     global quitMyAppLoop
+    #     quitMyAppLoop=False
+    #     # frame.Close()
+    #     self.unmarkdays(self.dateselector)
+        
+    #     del self.dateselector
+    #     frame.Destroy()
+        # current=self.dateselector.GetDate()
+        # previous=current.Add(wx.DateSpan(months=1))
+        # # # self.dateselector.EnableMonthChange(True)
+        # print(previous)
+        # self.dateselector.ResetAttr(11)
+        # self.dateselector.SetDate(previous)
+        # # frame.Refresh()
+        # sleep(0.1)
+        # # self.dateselector.EnableMonthChange(False)
+        # self.markdays(self.dateselector, self.markstyle)
+    # def on_next(self, event):
+    #     global globalcalendardate
+    #     current=self.dateselector.GetDate()
+    #     globalcalendardate=current.Add(wx.DateSpan(months=1))
+        
+    #     y=(wx.DateTime.GetYear(globalcalendardate))
+    #     m=(wx.DateTime.GetMonth(globalcalendardate)+1)#!!!!!!!!!!!!!for some reason getMonth returns 0..11 instead of 1..12
+        
+    #     d=(wx.DateTime.GetDay(globalcalendardate))
+    #     globalcalendardate=date(y,m,d)
+        
+    #     global quitMyAppLoop
+    #     quitMyAppLoop=False
+    #     # frame.Close()
+    #     self.unmarkdays(self.dateselector)
+        
+    #     del self.dateselector
+    #     frame.Destroy()
         
 class MyFrame(wx.Frame):
     
-    def __init__(self):
+    def __init__(self, calendardate):
         super().__init__(None, title='Red Calendar', size=(400, 500))
-        panel = MyPanel(self)
+        self.panel = MyPanel(self, calendardate)
         
         self.Show()
+        
+
+import sys
+import traceback
+
+def excepthook(type, value, tb):
+    message = 'Uncaught exception:\n'
+    message += ''.join(traceback.format_exception(type, value, tb))
+    print(message)
+
+
+    
+    
+# def r_relaunch():
+#     frame.Destroy()
+#     frame=MyFrame()
+#     frame.Show()
+
+# frame=None
+# app=None
+# panel=None
 
 
 if __name__ == '__main__':
+    sys.excepthook = excepthook
     filehandling.checkcreatesavefile(savefile)
-    app = wx.App(redirect=False)
-    frame = MyFrame()
+    app = wx.App(0)
+    frame = MyFrame(globalcalendardate)
     app.MainLoop()
+    
+    
+    
+    
+    # while quitMyAppLoop == False:
+        
+    #     quitMyAppLoop=True
+    #     app = wx.App(0)
+        
+    #     frame = MyFrame(globalcalendardate)
+    #     try:
+    #         app.MainLoop()
+    #     except:
+    #         exc_info = sys.exc_info()
+    #         print(exc_info)
+    #     app=None
+    #     frame=None
+    
 
-def startapp():
-    app = wx.App(redirect=False)
-    frame = MyFrame()
-    app.MainLoop()
 
-def restartapp():
-    self.Destroy()
+
+
+
+
     

@@ -6,7 +6,7 @@ import wx
 def getpastentries(savefile):
     pastentries = []
     f = open(savefile)
-    limit=100
+    limit=200
     counter=0
     rowcount = sum(1 for line in f)
     if rowcount > limit:
@@ -50,7 +50,7 @@ def checkentryexists(savefile, year, month, day):
             rowday=int(row[2])
             if rowyear==year and rowmonth==month and rowday== day:
                 result = [True,rownumber]
-        print(result)
+        #print(result)
         return result    
     f.close()
 
