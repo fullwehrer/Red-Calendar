@@ -1,26 +1,22 @@
 
-from cProfile import label
 from copy import deepcopy
 from datetime import datetime as dt
 from datetime import date
 from datetime import timedelta
-from tkinter.ttk import Style
-from turtle import color
 import pandas as pd
 import calendar
 import filehandling
 from matplotlib import pyplot as plt
-import numpy as np
 from matplotlib import ticker
-from matplotlib import offsetbox as ob
+
 
 
 
 
 def visualize(savefile):
-    savefile='visualizationtesting.csv'
-    # fordate=dt.today()
-    fordate=date(2022,9,5)
+    # savefile='visualizationtesting.csv'
+    fordate=dt.today()
+    # fordate=date(2022,9,5)
     plot(savefile, fordate)
     
     
@@ -58,9 +54,7 @@ def plot(savefile, fordate):
     
     
     fig=plt.figure(figsize=(15,7.5))
-    # plt.text(-0.1,-0.1,text1, fontsize=18, style='oblique', ha='center',
-    #      va='top', wrap=True)
-    
+
     for i_month in range(len(observedmonths)):
         a=plt.subplot(len(observedmonths), 1,i_month+1)
         x=plotdata[plotdata[1] == observedmonths[i_month]][2].reset_index(drop=True)
@@ -110,8 +104,6 @@ def plot(savefile, fordate):
             a.xaxis.set_major_formatter(ticker.NullFormatter())
         if i_month==0:
             plt.legend(plotcollection, [p_.get_label() for p_ in plotcollection],bbox_to_anchor=(0,1,1,.1), ncol=5, mode="expand", loc="lower left")
-        # if i_month==len(observedmonths)-1:
-        #     plt.legend('wfwefg',bbox_to_anchor=(0,0,1,.1), ncol=1, mode="expand", loc="upper left")
         a.xaxis.set_major_locator(ticker.MultipleLocator(1))
         a.yaxis.set_major_locator(ticker.MultipleLocator(2))
         a.yaxis.set_minor_locator(ticker.MultipleLocator(1))
@@ -122,12 +114,11 @@ def plot(savefile, fordate):
          va='top', wrap=True)
     plt.text(0,-4,text2, fontsize=10, style='oblique', ha='left',
          va='top', wrap=True)
+    plt.savefig('latest_period_chart')
     plt.show()
-
-
-
+    
 
     return
 
 
-visualize('visualizationtesting.csv')
+# visualize('visualizationtesting.csv')

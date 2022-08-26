@@ -16,7 +16,9 @@ import visualization
 
 
 global savefile 
-savefile ='visualizationtesting.csv'
+savefile ='redcalendar.csv'
+global showperiodchart
+showperiodchart=False
 now=datetime.today()
 
 
@@ -178,8 +180,12 @@ class MyPanel(wx.Panel):
         exit()    
 
     def on_vis(self, event):
-        visualization.visualize(savefile)
-        exit()
+        global showperiodchart
+        showperiodchart = True
+        destroyframe()
+        
+def destroyframe():
+    frame.Destroy()
         
 class MyFrame(wx.Frame):
     
@@ -191,11 +197,14 @@ class MyFrame(wx.Frame):
         
 
 
-
+frame=None
 if __name__ == '__main__':
     filehandling.checkcreatesavefile(savefile)
     app = wx.App(0)
     frame = MyFrame()
     app.MainLoop()
+    if showperiodchart:
+        visualization.visualize(savefile)
+
     
 
