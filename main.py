@@ -79,7 +79,7 @@ class MyPanel(wx.Panel):
             name='forgot_check_box')
         forgotcheck.Bind(wx.EVT_CHECKBOX, self.on_forgotcheck)
 
-        firstcheck=wx.CheckBox(self, label="FIRST entry since last bleeding/pain? (all days from last entry will be marked pain/bloodfree unless FORGOTTEN is also checked)",
+        firstcheck=wx.CheckBox(self, label="no pain/bleeding since last entry? (all days from last entry will be marked pain/bloodfree unless FORGOTTEN is also checked)",
             name='firstday_check_box')
         firstcheck.Bind(wx.EVT_CHECKBOX, self.on_firstdaycheck)
 
