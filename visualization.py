@@ -177,4 +177,4 @@ def addcounter(dataframe):
     dataframe[9]=cycle
     dataframe[10]=lastdayofcycle
     return dataframe
-visualize('visualizationtesting.csv')
+# visualize('visualizationtesting.csv')
