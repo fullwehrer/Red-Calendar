@@ -83,7 +83,7 @@ class MyPanel(wx.Panel):
             name='firstday_check_box')
         firstcheck.Bind(wx.EVT_CHECKBOX, self.on_firstdaycheck)
 
-        bloodbox=wx.RadioBox(self, label="bleeding amount (0-no blood, 1-spotting, 2 - light bleeding, 3- medium bleeding, 4- stronger bleeding, 5- heavy bleeding)",
+        bloodbox=wx.RadioBox(self, label="bleeding amount (0-no blood, 1-spotting, 2-light bleeding, 3-medium bleeding, 4-stronger bleeding, 5-heavy bleeding)",
             choices=['0','1','2','3','4','5'], majorDimension=0, style=wx.RA_SPECIFY_COLS,
             name='blood_radio_box')
         bloodbox.Bind(wx.EVT_RADIOBOX, self.on_bloodbox)
